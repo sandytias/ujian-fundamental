@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <style>
+        .atas,
+        td {
+            border: 3px solid black;
+            border-collapse: collapse;
+            padding: 15px;
+        }
+
+        .bawah,
+        th {
+            border: 3px solid black;
+            border-collapse: collapse;
+            padding: 15px 10px 5px 10px;
+        }
+    </style>
+
+</head>
+
+<body style="background-color: blanchedalmond;">
+    <center>
+
+        <div id = "tampilanawal">
+            <h1><b>Silahkan Login Terlebih Dahulu</b></h1>
+    
+            <input type="text" id="username"><br>
+            <input type="password" id="password"><br>
+        </div>
+        <input type="button" id = "BTlogin" value="login" onclick="Login()">
+        <table>
+            <thead id = "tadmin">
+                
+            </thead>
+            <tbody id="tmenu">
+
+            </tbody>
+        </table><br>
+        <table>
+            <thead id = "tuser">
+               
+            </thead>
+            <tbody id="tcart">
+
+            </tbody>
+        </table><br>
+        <div id="checkout">
+                <input type="button" value="checkout" onclick="checkout()"><br>
+
+        </div>
+        <h3 id="total">
+
+        </h3>
+        <script>
+            class product {
+                constructor(nama, barang, harga) {
+                    this.nama = nama,
+                        this.barang = barang,
+                        this.harga = harga
+                }
+            }
+
+            var imageA = 'http://www.whiskerino2005.com/wp-content/uploads/2018/11/Jenis-jenis-minuman-beralkohol-wine.jpg'
+            var imageB = 'http://www.whiskerino2005.com/wp-content/uploads/2018/11/Jenis-jenis-minuman-beralkohol-whisky.jpg'
+            var imageC = 'http://www.whiskerino2005.com/wp-content/uploads/2018/11/Jenis-jenis-minuman-beralkohol-vodka.jpg'
+            var imageD = 'http://www.whiskerino2005.com/wp-content/uploads/2018/11/Jenis-jenis-minuman-beralkohol-sake.jpg'
+
+            var listmenu = [new product('Wine', imageA, 20000), new product('Whisky', imageB, 15000), new product('vodka', imageC, 10000), new product('sake', imageD, 5000)]
+
+            function printMenu(proteksi) {
+                if(proteksi == true){
+                    var tableadmin = `
+                    <tr>
+                    <td>No</td>
+                    <td>Nama</td>
+                    <td>Barang</td>
+                    <td>Harga</td>
+                    <td>Action</td>
+                </tr>`
+                document.getElementById('tadmin').innerHTML = tableadmin
+                    var output = ''
+                    for (i = 0; i < listmenu.length; i++) {
+                        output += `<tr>
+                    <td>${i + 1}</td>
+                    <td id="nama${i}">${listmenu[i].nama}</td>
+                    <td id="url${i}"><img src="${listmenu[i].barang}" alt="barang" style="width:100px"></td>
+                    <td id="harga${i}">${listmenu[i].harga}</td>
+                    <td><input type="button" value="Edit" onclick="editProduct(${i})">
+                        <input type="button" value="Delete" onclick="deleteAdmin(${i})"></td>
+                    </tr>`
+                    }
+                    output+=`<tr>
+                       <td></td>    
+                       <td><input type="text" id="newName"></td>    
+                       <td><input type="text" id="newURL"></td>    
+                       <td><input type="number" id="newPrice"></td>    
+                       <td><input type="button" value="Add Product" onclick="addNewProduct()"></td>    
+                    </tr>`
+                    document.getElementById('tmenu').innerHTML = output
+
+                } else if(proteksi == false){
+                    document.getElementById('tmenu').innerHTML = ""
+                    document.getElementById('tadmin').innerHTML = ""
+                    document.getElementById('tuser').innerHTML = ""
+                    document.getElementById('checkout').innerHTML = ""
+                    document.getElementById('total').innerHTML = ""
+                    
+                }
+            }
+            function addNewProduct(){
+                var newName = document.getElementById('newName').value;
+                console.log(newName)
+                var newURL = document.getElementById('newUrl');
+                console.log(newURL)
+                var newPrice = document.getElementById('newPrice').value;
+                if(newName === '' || newURL === '' || newPrice === ''){
+                    return alert('isi semua form')
+                }else{
+                    listmenu.push(new product(newName, newURL, newPrice))
+                    printMenu(true)
+                }
+            }
+
+            var Cart = []
+            // printMenu()
+            function printCart() {
+                var hasil = ''
+                for (i = 0; i < Cart.length; i++) {
+                    hasil += `<tr>
+                    <td>${i+1}</td>
+                    <td>${Cart[i].nama}</td>
+                    <td><img src="${Cart[i].barang}" alt="barang" style="width:100px"></td>
+                    <td>${Cart[i].harga}</td>
+                    <td><input type="button" value="Delete Cart" onclick="deleteCart(${i})"></td>
+                    </tr>`
+                }
+                document.getElementById('tcart').innerHTML = hasil
+                
+            }
+
+            function Buy(num){
+                Cart.push(listmenu[num])
+                printCart()
+            }
+
+            function addToCart(num){
+                Cart.push(listmenu[num, 1])
+                printCart()
+            }
+
+            function deleteCart(num){
+                Cart.splice(num, 1)
+                printCart()
+            }
+
+            function checkout(){
+                var total = 0
+                for(i=0; i<Cart.length; i++){
+                    total += Cart[i].harga
+                }
+                document.getElementById('total').innerHTML = "jumlah belanja anda adalah = " +total+"\nTerima Kasih Sudah Berbelanja"
+                Cart= []
+                printCart()
+                document.getElementById('tmenu').innerHTML = ""
+                document.getElementById('tadmin').innerHTML = ""
+                document.getElementById('tuser').innerHTML = ""
+                document.getElementById('total').innerHTML = ""
+                document.getElementById('checkout').innerHTML = ""
+            }
+
+           function printUser(proteksi2){
+            if(proteksi2==true){
+                var tableadmin = `
+                    <tr>
+                    <td>No</td>
+                    <td>Nama</td>
+                    <td>Barang</td>
+                    <td>Harga</td>
+                    <td>Action</td>
+                </tr>`
+                document.getElementById('tadmin').innerHTML = tableadmin
+            var tableUser = 
+               ` <tr>
+                    <td>No</td>
+                    <td>Nama</td>
+                    <td>Barang</td>
+                    <td>Harga</td>
+                    <td>Action</td>
+                </tr>`
+                document.getElementById('tuser').innerHTML = tableUser
+                
+               var output = ''
+               for(i=0; i<listmenu.length; i++){
+                   output += `<tr>
+                   <td>${i+1}</td>
+                   <td>${listmenu[i].nama}</td>
+                   <td><img src="${listmenu[i].barang}" alt="barang" style="width:100px"></td>
+                   <td>${listmenu[i].harga}</td>
+                   <td><input type="button" value="Buy" onclick="Buy(${i})"></td>
+                   </tr>`
+               }
+               document.getElementById('tmenu').innerHTML = output
+            }else if(proteksi2=false){
+
+               document.getElementById('tadmin').innerHTML = ""
+               document.getElementById('tuser').innerHTML = ""
+               document.getElementById('total').innerHTML = ""
+                document.getElementById('checkout').innerHTML = ""
+            }
+           }
+          
+          
+           function editProduct(index){
+            //    var newName = prompt('Masukan Nama Produk Baru')
+            //    var newImg = prompt('Masukan Url Photo Baru')
+            //    var newPrice = prompt('Masukan Harga Produk Baru')
+            document.getElementById(`nama${index}`).innerHTML = `<input type="text" id="namaBaru" placeholder="Masukan Nama Baru">`
+            document.getElementById(`url${index}`).innerHTML = `<input type="text" id="urlBaru" placeholder="Masukan Foto Baru">`
+            document.getElementById(`harga${index}`).innerHTML = `<input type="text" id="hargaBaru" placeholder="Masukan Harga Baru">`
+               if(newName === ''){
+                   newName = listmenu[index].nama
+               }    
+               if(newImg === ''){
+                   newImg = listmenu[index].barang
+               }
+               if(newPrice === ''){
+                   newPrice = listmenu[index].harga
+               }else if(newPrice>0){
+                   parseInt(newPrice)
+               }
+               console.log(newPrice)
+               listmenu[index].nama = newName
+               listmenu[index].barang = newImg
+               listmenu[index].harga = newPrice
+               printMenu(true)
+           }
+
+           function deleteAdmin(num){
+               listmenu.splice(num,1)
+               printMenu(true)
+           }
+           
+
+            class cetakanLogin {
+                constructor(username, password) {
+
+                    this.username = username,
+                        this.password = password,
+                        this.role = 'admin'
+                }
+            }
+            var login = [
+                {
+                    username: 'sandy',
+                    password: 'asd123',
+                    role: 'user'
+                },
+                {
+                    username: 'admin',
+                    password: 'admin',
+                    role: 'admin'
+                }
+            ]
+            function cek(username, password) {
+                for (var i = 0; i < login.length; i++) {
+                    if (username == login[i].username && password == login[i].password) {
+                        return login[i].role
+                    }
+                }
+                return false
+            }
+
+            function Login() {
+                var username = document.getElementById('username').value
+                var password = document.getElementById('password').value
+                console.log(username)
+                console.log(password)
+                document.getElementById('username').value = ""
+                document.getElementById('password').value = ""
+                document.getElementById('tampilanawal').innerHTML = ""
+                console.log(cek(username, password))
+                if (cek(username, password) == 'user') {
+                    document.getElementById("BTlogin").value = "Logout"
+                    document.getElementById("BTlogin").id = "BTLogout"
+                    document.getElementById("BTLogout").setAttribute ("onclick", "Logout()")
+                    alert('anda sebagai user')
+                    printUser(true)
+                } else if (cek(username, password) == 'admin') {
+                    document.getElementById("BTlogin").value = "Logout"
+                    document.getElementById("BTlogin").id = "BTLogout"
+                    document.getElementById("BTLogout").setAttribute ("onclick", "Logout()")
+                    alert('anda sebagai admin')
+                    printMenu(true)
+                }
+                else {
+                    alert('anda belum terdaftar')
+                }
+            }
+           function Logout(){
+                document.getElementById('tampilanawal').innerHTML = `
+                <h1><b>Silahkan Login Terlebih Dahulu</b></h1>
+                <input type="text" id="username"><br>
+                <input type="password" id="password"><br>`
+                document.getElementById('BTLogout').value = "Login"
+                document.getElementById('BTLogout').id = "BTlogin"
+                document.getElementById('BTlogin').setAttribute("onclick","Login()")
+                document.getElementById('tmenu').innerHTML = ""
+                document.getElementById('tadmin').innerHTML = ""
+                document.getElementById('tuser').innerHTML = ""
+                document.getElementById('tcart').innerHTML = ""
+                document.getElementById('total').innerHTML = ""
+                document.getElementById('checkout').innerHTML = ""
+     
+           }
+
+
+
+
+
+
+
+        </script>
+</body>
+</center>
+
+</html>
